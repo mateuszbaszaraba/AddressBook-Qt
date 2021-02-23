@@ -1,15 +1,26 @@
 #include "addressbook.h"
 #include "ui_addressbook.h"
 
+#include <QLabel>
+#include <QGridLayout>
+
 AddressBook::AddressBook(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::AddressBook)
+    : QWidget(parent)
 {
-    ui->setupUi(this);
-}
+    QLabel *nameLabel = new QLabel(tr("Name:"));
+    nameLine = new QLineEdit;
 
-AddressBook::~AddressBook()
-{
-    delete ui;
-}
 
+    QLabel *addressLabel = new QLabel(tr("Address:"));
+    addressText = new QTextEdit;
+
+
+    QGridLayout *mainLayout = new QGridLayout;
+    mainLayout->addWidget(nameLabel, 0, 0);
+    mainLayout->addWidget(nameLine, 0, 1);
+    mainLayout->addWidget(addressLabel, 1, 0, Qt::AlignTop);
+    mainLayout->addWidget(addressText, 1, 1);
+
+    setLayout(mainLayout);
+    setWindowTitle(tr("Address Book by bbk"));
+}
