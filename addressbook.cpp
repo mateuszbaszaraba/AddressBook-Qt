@@ -24,6 +24,11 @@ AddressBook::AddressBook(QWidget *parent)
     cancelButton = new QPushButton(tr("&Cancel"));
     cancelButton->hide();
 
+    nextButton = new QPushButton(tr("&Next"));
+    nextButton->setEnabled(false);
+    previousButton = new QPushButton(tr("&Previous"));
+    previousButton->setEnabled(false);
+
 
     connect(addButton, &QPushButton::clicked,
             this, &AddressBook::addContact);
@@ -32,11 +37,20 @@ AddressBook::AddressBook(QWidget *parent)
     connect(cancelButton, &QPushButton::clicked,
             this, &AddressBook::cancel);
 
+    connect(nextButton, &QPushButton::clicked,
+            this, &AddressBook::next);
+    connect(previousButton, &QPushButton::clicked,
+            this, &AddressBook::previous);
+
     QVBoxLayout *buttonLayout1 = new QVBoxLayout;
     buttonLayout1->addWidget(addButton, Qt::AlignTop);
     buttonLayout1->addWidget(submitButton);
     buttonLayout1->addWidget(cancelButton);
     buttonLayout1->addStretch();
+
+    QHBoxLayout *buttonLayout2 = new QHBoxLayout;
+    buttonLayout2->addWidget(previousButton);
+    buttonLayout2->addWidget(nextButton);
 
 
     QGridLayout *mainLayout = new QGridLayout;
@@ -45,6 +59,7 @@ AddressBook::AddressBook(QWidget *parent)
     mainLayout->addWidget(addressLabel, 1, 0, Qt::AlignTop);
     mainLayout->addWidget(addressText, 1, 1);
     mainLayout->addLayout(buttonLayout1, 1, 2);
+    mainLayout->addLayout(buttonLayout2, 2, 1);
 
     setLayout(mainLayout);
     setWindowTitle(tr("Address Book by bbk"));
@@ -65,6 +80,9 @@ void AddressBook::addContact()
     addButton->setEnabled(false);
     submitButton->show();
     cancelButton->show();
+
+    nextButton->setEnabled(false);
+    previousButton->setEnabled(false);
 }
 
 void AddressBook::submitContact()
@@ -101,6 +119,10 @@ void AddressBook::submitContact()
     addButton->setEnabled(true);
     submitButton->hide();
     cancelButton->hide();
+
+    int number = contacts.size();
+    nextButton->setEnabled(number>1);
+    previousButton->setEnabled(number>1);
 }
 
 void AddressBook::cancel()
@@ -115,11 +137,45 @@ void AddressBook::cancel()
     addButton->setEnabled(true);
     submitButton->hide();
     cancelButton->hide();
+
+    int number = contacts.size();
+    nextButton->setEnabled(number>1);
+    previousButton->setEnabled(number>1);
 }
 
+void AddressBook::next()
+{
+    QString name = nameLine->text();
+    QMap<QString, QString>::iterator i = contacts.find(name);
 
+    if (i != contacts.end())
+        i++;
 
+    if (i == contacts.end())
+        i = contacts.begin();
 
+    nameLine->setText(i.key());
+    addressText->setText(i.value());
+}
+
+void AddressBook::previous()
+{
+    QString name = nameLine->text();
+    QMap<QString, QString>::iterator i = contacts.find(name);
+
+    if (i == contacts.end()){
+        nameLine->clear();
+        addressText->clear();
+        return;
+    }
+
+    if (i == contacts.begin())
+        i = contacts.end();
+
+    i--;
+    nameLine->setText(i.key());
+    addressText->setText(i.value());
+}
 
 
 

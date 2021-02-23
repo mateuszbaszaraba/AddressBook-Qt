@@ -21,6 +21,8 @@ public slots:
     void addContact();
     void submitContact();
     void cancel();
+    void next();
+    void previous();
 
 private:
     QLineEdit *nameLine;
@@ -28,6 +30,8 @@ private:
     QPushButton *addButton;
     QPushButton *submitButton;
     QPushButton *cancelButton;
+    QPushButton *nextButton;
+    QPushButton *previousButton;
 
     QMap<QString, QString> contacts;
     QString oldName;
