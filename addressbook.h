@@ -1,6 +1,8 @@
 #ifndef ADDRESSBOOK_H
 #define ADDRESSBOOK_H
 
+#include "finddialog.h"
+
 #include <QMainWindow>
 #include <QLineEdit>
 #include <QTextEdit>
@@ -25,6 +27,7 @@ public slots:
     void cancel();
     void next();
     void previous();
+    void findContact();
 
 private:
     QLineEdit *nameLine;
@@ -36,10 +39,12 @@ private:
     QPushButton *previousButton;
     QPushButton *editButton;
     QPushButton *removeButton;
+    QPushButton *findButton;
 
     QMap<QString, QString> contacts;
     QString oldName;
     QString oldAddress;
+    FindDialog *dialog;
 
     enum Mode { NavigationMode, AddingMode, EditingMode };
     void updateInterface(Mode mode);

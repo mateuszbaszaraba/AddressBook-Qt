@@ -34,6 +34,11 @@ AddressBook::AddressBook(QWidget *parent)
     removeButton = new QPushButton(tr("&Remove"));
     removeButton->setEnabled(false);
 
+    findButton = new QPushButton(tr("&Find"));
+    findButton->setEnabled(false);
+
+    dialog = new FindDialog(this);
+
 
     connect(addButton, &QPushButton::clicked,
             this, &AddressBook::addContact);
@@ -52,12 +57,16 @@ AddressBook::AddressBook(QWidget *parent)
     connect(removeButton, &QPushButton::clicked,
             this, &AddressBook::removeContact);
 
+    connect(findButton, &QPushButton::clicked,
+            this, &AddressBook::findContact);
+
     QVBoxLayout *buttonLayout1 = new QVBoxLayout;
     buttonLayout1->addWidget(addButton, Qt::AlignTop);
     buttonLayout1->addWidget(submitButton);
     buttonLayout1->addWidget(cancelButton);
     buttonLayout1->addWidget(editButton);
     buttonLayout1->addWidget(removeButton);
+    buttonLayout1->addWidget(findButton);
     buttonLayout1->addStretch();
 
     QHBoxLayout *buttonLayout2 = new QHBoxLayout;
@@ -260,6 +269,7 @@ void AddressBook::updateInterface(Mode mode)
         removeButton->setEnabled(number >= 1);
         nextButton->setEnabled(number > 1);
         previousButton->setEnabled(number >1 );
+        findButton->setEnabled(number > 2);
 
         submitButton->hide();
         cancelButton->hide();
@@ -268,7 +278,25 @@ void AddressBook::updateInterface(Mode mode)
     }
 }
 
+void AddressBook::findContact()
+{
+    dialog->show();
 
+    if (dialog->exec() == QDialog::Accepted) {
+        QString contactName = dialog->getFindText();
+
+        if (contacts.contains(contactName)) {
+            nameLine->setText(contactName);
+            addressText->setText(contacts.value(contactName));
+        } else {
+            QMessageBox::information(this, tr("Contact Not Found"),
+                tr("Sorry, \"%1\" is not in your address book.").arg(contactName));
+            return;
+        }
+    }
+
+    updateInterface(NavigationMode);
+}
 
 
 
